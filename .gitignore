@@ -1,0 +1,9 @@
+env/
+__pycache__/
+data/
+bibtex-analysis-status-report.txt
+.mypy_cache/
+.vscode/
+*.bib
+report/
+!test/testbib.bib
