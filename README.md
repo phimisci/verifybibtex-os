@@ -49,8 +49,10 @@ Incorrect:
 These errors concern the overall structure of the .bib file. If these errors are present, the file is not a valid bibtex bibliography. This may include overall parsing errors, invalid blocks, or empty files.
 
 ## Critical errors
+Critical errors are errors that are likely to cause problems when using the bibliography in a citation manager or when compiling a document. These errors should be fixed before using the bibliography.
 
-
+1. Checks if every field except the last one ends with a comma.
+2. Checks if several characters, such as "&", "%", and "\#", are escaped.
 
 ## Warnings
 
@@ -62,8 +64,8 @@ These errors concern the overall structure of the .bib file. If these errors are
 4. Checks if incollection has "date", "year", or "pubstate" field.
 5. Checks if a field is entirely wrapped in curly braces (critical) or has many curly braces (warning).
 6. Checks if an author or editor field includes "et al" or "and others" (warning).
-7. Checks if every fields correctly ends with a comma.
-8. Checks if several characters, such as "&", "%", and "\#", are escaped.
+
+
 
 # About
 This application was developed by Thomas Jurczyk (thomjur on GitHub) for the journal [Philosophy and the Mind Sciences](https://philosophymindscience.org/) as part of a project funded by the German Research Foundation (DFG).

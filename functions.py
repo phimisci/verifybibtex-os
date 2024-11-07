@@ -78,6 +78,32 @@ def check_author_field(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict)
                 "Editor field contains 'et al' or 'and others'. Please avoid using these abbreviations and list all editors instead. Individual editors should be separated by 'and'.")
             verifybibtex_dict["errors"] += 1
 
+def check_curly_braces(entry: bibtexparser.model.Entry,  verifybibtex_dict: Dict) -> None:
+    ''' Function to check if a title includes many curly braces to secure capitalization. This might be intentional but could also lead to several problems. Example: "Going {n}owhere: {A} {j}ourney to {heaven}"
+
+        Parameters
+        ----------
+            entry: Dict
+                The dictionary with .bib entry from BibDatabase
+            verifybibtex_dict: Dict
+                Dictionary to collect error messages for BibTex entries.
+        Returns
+        -------
+            None
+    '''
+    if entry.fields_dict.get("title") == None:
+        verifybibtex_dict["entries"][entry['ID']]["critical"].append(
+            "Entry has no title.")
+        verifybibtex_dict["errors"] += 1
+    else:
+        title = entry["title"]
+        # count occurences if {}
+        curly_braces_counter = title.count(r"{") if title is not None else 0
+        if curly_braces_counter > 1:
+            verifybibtex_dict["entries"][entry['ID']]["warning"].append(
+                f"Found several {{}} groups in title. Please check if this is correct.")
+            verifybibtex_dict["errors"] += 1
+
 def check_double_curly_braces(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -> None:
     ''' Function to check if some fields are wrapped in double curly braces. If so, warn the user.
 
@@ -117,57 +143,6 @@ def check_double_curly_braces(entry: bibtexparser.model.Entry, verifybibtex_dict
                 verifybibtex_dict["entries"][entry['ID']]["critical"].append(
                     f"{key} field is wrapped in double curly braces.")
                 verifybibtex_dict["errors"] += 1
-
-def check_unescaped_characters(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -> None:
-    ''' Function to check if a field contains unescaped characters which should be escaped, such as &#%. This might be intentional but could also lead to several problems.
-
-        Parameters
-        ----------
-            entry: Dict
-                The dictionary with .bib entry from BibDatabase
-
-            verifybibtex_dict: Dict
-                Dictionary to collect error messages for BibTex entries.
-        Returns
-        -------
-            None
-    '''
-    for key in entry.fields_dict.keys():
-        # First search for characters that should be escaped
-        if re.search(r"&|#|%", entry[key]):
-            verifybibtex_dict["entries"][entry['ID']]["critical"].append(
-                f"{key} field contains unescaped characters (& or # or %). Please make sure to escape these characters using a backslash.")
-            verifybibtex_dict["errors"] += 1
-        if re.search(r"\$|\^|_|~", entry[key]):
-            verifybibtex_dict["entries"][entry['ID']]["warning"].append(
-                f"{key} field contains characters that might need to be escaped ($ or ^ or _ or ~). Please check if this is correct.")
-            verifybibtex_dict["errors"] += 1
-
-def check_curly_braces(entry: bibtexparser.model.Entry,  verifybibtex_dict: Dict) -> None:
-    ''' Function to check if a title includes many curly braces to secure capitalization. This might be intentional but could also lead to several problems. Example: "Going {n}owhere: {A} {j}ourney to {heaven}"
-
-        Parameters
-        ----------
-            entry: Dict
-                The dictionary with .bib entry from BibDatabase
-            verifybibtex_dict: Dict
-                Dictionary to collect error messages for BibTex entries.
-        Returns
-        -------
-            None
-    '''
-    if entry.fields_dict.get("title") == None:
-        verifybibtex_dict["entries"][entry['ID']]["critical"].append(
-            "Entry has no title.")
-        verifybibtex_dict["errors"] += 1
-    else:
-        title = entry["title"]
-        # count occurences if {}
-        curly_braces_counter = title.count(r"{") if title is not None else 0
-        if curly_braces_counter > 1:
-            verifybibtex_dict["entries"][entry['ID']]["warning"].append(
-                f"Found several {{}} groups in title. Please check if this is correct.")
-            verifybibtex_dict["errors"] += 1
 
 # Okay
 def check_invalid_fields(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -> None:
@@ -274,6 +249,32 @@ def check_type_field(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -
         verifybibtex_dict["entries"][entry['ID']]["warning"].append(
             "This entry contains a type field, which should generally be avoided.")
         verifybibtex_dict["errors"] += 1
+
+# Okay
+def check_unescaped_characters(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -> None:
+    ''' Function to check if a field contains unescaped characters which should be escaped, such as &, #, or %. This might be intentional but could also lead to severe problems.
+
+        Parameters
+        ----------
+            entry: bibtexparser.model.Entry
+                The dictionary with .bib entry from BibDatabase
+
+            verifybibtex_dict: Dict
+                Dictionary to collect error messages for BibTex entries.
+        Returns
+        -------
+            None
+    '''
+    for key in entry.fields_dict.keys():
+        # First search for characters that should be escaped
+        if re.search(r"\s&|\s#|\s%", entry[key]):
+            verifybibtex_dict["entries"][entry['ID']]["critical"].append(
+                f"{key} field contains unescaped characters (& or # or %). Please make sure to escape these characters using a backslash.")
+            verifybibtex_dict["errors"] += 1
+        if re.search(r"\s\$|\s\^|\s_|\s~", entry[key]):
+            verifybibtex_dict["entries"][entry['ID']]["warning"].append(
+                f"{key} field contains characters that might need to be escaped ($ or ^ or _ or ~). Please check if this is correct.")
+            verifybibtex_dict["errors"] += 1
 
 def create_verifybibtex_dictionary() -> Dict:
     '''Function to create a dictionary to collect error messages for BibTex entries.
