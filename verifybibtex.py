@@ -62,7 +62,7 @@ def main(library: bibtexparser.Library, verifybibtex_dict: Dict) -> None:
         check_curly_braces(entry, verifybibtex_dict)
         check_double_curly_braces(entry, verifybibtex_dict)
 
-    # write output
+    # Write output
     write_output(verifybibtex_dict)
 
 

@@ -7,7 +7,7 @@ def check_article_doi(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) 
 
         Parameters
         ----------
-            entry: Dict
+            entry: bibtexparser.model.Entry
                 The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
@@ -15,13 +15,13 @@ def check_article_doi(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) 
         -------
             None
     '''
-    # check if doi or url is present
+    # Check if doi or url is present
     if (entry.fields_dict.get("doi") == None) and (entry.fields_dict.get("url") == None):
         verifybibtex_dict["entries"][entry['ID']]["critical"].append(
             f"No DOI or URL could be found!")
         verifybibtex_dict["errors"] += 1
     elif entry.fields_dict.get("doi") != None:
-        # check if doi is correct (not including any domains but only the ID)
+        # Check if doi is correct (not including any domains but only the ID)
         pattern = re.compile(r"^10.*?\/[-._;()/:a-zA-Z0-9]+$")
         doi = str(entry["doi"])
         if not re.match(pattern, doi):
@@ -29,7 +29,7 @@ def check_article_doi(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) 
                 f"This entry seems to have malformatted DOI: {doi}.")
             verifybibtex_dict["errors"] += 1
         
-        # check if doi ends with a full stop, which might be an error
+        # Check if doi ends with a full stop, which might be an error
         if str(entry["doi"])[-1] == ".":
             verifybibtex_dict["entries"][entry['ID']]["critical"].append(
                 f"This entries' DOI ends with a full stop, which might cause problems: {doi}")
@@ -40,7 +40,7 @@ def check_article_pages(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict
 
         Parameters
         ----------
-            entry: Dict
+            entry: bibtexparser.model.Entry
                 The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
@@ -58,7 +58,7 @@ def check_author_field(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict)
     
         Parameters
         ----------
-            entry: Dict
+            entry: bibtexparser.model.Entry
                 The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
@@ -66,25 +66,25 @@ def check_author_field(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict)
         -------
             None
     '''
-    pattern = re.compile(r"et al|and others",re.IGNORECASE)
+    author_pattern = re.compile(r"et al|and others",re.IGNORECASE)
     if entry.fields_dict.get("author") != None:
-        if re.search(pattern, entry["author"]):
+        if re.search(author_pattern, entry["author"]):
             verifybibtex_dict["entries"][entry['ID']]["warning"].append(
                 "Author field contains 'et al' or 'and others'. Please avoid using these abbreviations and list all authors instead. Individual authors should be separated by 'and'.")
             verifybibtex_dict["errors"] += 1
     if entry.fields_dict.get("editor") != None:
-        if re.search(pattern, entry["editor"]):
+        if re.search(author_pattern, entry["editor"]):
             verifybibtex_dict["entries"][entry['ID']]["warning"].append(
                 "Editor field contains 'et al' or 'and others'. Please avoid using these abbreviations and list all editors instead. Individual editors should be separated by 'and'.")
             verifybibtex_dict["errors"] += 1
 
 def check_curly_braces(entry: bibtexparser.model.Entry,  verifybibtex_dict: Dict) -> None:
-    ''' Function to check if a title includes many curly braces to secure capitalization. This might be intentional but could also lead to several problems. Example: "Going {n}owhere: {A} {j}ourney to {heaven}"
+    ''' Function to check if a title includes many curly braces to secure capitalization. This might be intentional but could also lead to problems. Example: "Going {n}owhere: {A} {j}ourney to {heaven}"
 
         Parameters
         ----------
-            entry: Dict
-                The dictionary with .bib entry from BibDatabase
+            entry: bibtexparser.model.Entry
+                The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
         Returns
@@ -97,7 +97,7 @@ def check_curly_braces(entry: bibtexparser.model.Entry,  verifybibtex_dict: Dict
         verifybibtex_dict["errors"] += 1
     else:
         title = entry["title"]
-        # count occurences if {}
+        # Count occurences if {}
         curly_braces_counter = title.count(r"{") if title is not None else 0
         if curly_braces_counter > 1:
             verifybibtex_dict["entries"][entry['ID']]["warning"].append(
@@ -109,15 +109,15 @@ def check_double_curly_braces(entry: bibtexparser.model.Entry, verifybibtex_dict
 
         Parameters
         ----------
-            entry: Dict
-                The dictionary with .bib entry from BibDatabase
+            entry: bibtexparser.model.Entry
+                The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
         Returns
         -------
             None
     '''
-    # fields to ignore
+    # Fields to ignore
     ignored_fields_list = [
         "pages",
         "volume",
@@ -129,12 +129,12 @@ def check_double_curly_braces(entry: bibtexparser.model.Entry, verifybibtex_dict
         "publisher",
         "address"
     ]
-    # create pattern to find double curly braces (in this case: only single braces) at start and end of string
+    # Create pattern to find double curly braces (in this case: only single braces) at start and end of string
     pattern = re.compile(r"^\{.*\}$")
     for key in entry.fields_dict.keys():
         if re.match(pattern, entry[key]) and key not in ignored_fields_list:
-            # check if string is really wrapped in curly braces or only starts and ends with pairs of braces
-            # TODO: there are still uncaught cases maybe
+            # Check if string is really wrapped in curly braces or only starts and ends with pairs of braces
+            # TODO: There are still uncaught cases maybe
             if len(entry[key]) < 4:  # make sure string is long enough for a check
                 verifybibtex_dict["entries"][entry['ID']]["critical"].append(
                     f"{key} field is wrapped in double curly braces.")
@@ -144,7 +144,6 @@ def check_double_curly_braces(entry: bibtexparser.model.Entry, verifybibtex_dict
                     f"{key} field is wrapped in double curly braces.")
                 verifybibtex_dict["errors"] += 1
 
-# Okay
 def check_invalid_fields(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -> None:
     ''' Function to check if a field is valid. For example, every field entry should end with a comma.
     
@@ -178,7 +177,7 @@ def check_incollection(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict)
 
         Parameters
         ----------
-            entry: Dict
+            entry: bibtexparser.model.Entry
                 The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
@@ -203,7 +202,7 @@ def check_incollection(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict)
         verifybibtex_dict["errors"] += 1
 
     if entry.fields_dict.get("pages") == None:
-        verifybibtex_dict["entries"][entry['ID']]["critical"].append(
+        verifybibtex_dict["entries"][entry['ID']]["warning"].append(
             "This chapter has no indicated page range. Please check if this is correct.")
         verifybibtex_dict["errors"] += 1
 
@@ -212,7 +211,6 @@ def check_incollection(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict)
             "This chapter has no publisher.")
         verifybibtex_dict["errors"] += 1
 
-# Okay
 def check_parsing_errors(failed_blocks: bibtexparser.model.ParsingFailedBlock, verifybibtex_dict: Dict) -> None:
     """Function to check for parsing errors and add them to dictionary. bibtexparser 2.X needed!
 
@@ -236,7 +234,7 @@ def check_type_field(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -
 
         Parameters
         ----------
-            entry: Dict
+            entry: bibtexparser.model.Entry
                 The dictionary with .bib entry from BibDatabase.
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
@@ -250,14 +248,13 @@ def check_type_field(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -
             "This entry contains a type field, which should generally be avoided.")
         verifybibtex_dict["errors"] += 1
 
-# Okay
 def check_unescaped_characters(entry: bibtexparser.model.Entry, verifybibtex_dict: Dict) -> None:
     ''' Function to check if a field contains unescaped characters which should be escaped, such as &, #, or %. This might be intentional but could also lead to severe problems.
 
         Parameters
         ----------
             entry: bibtexparser.model.Entry
-                The dictionary with .bib entry from BibDatabase
+                The dictionary with .bib entry from BibDatabase.
 
             verifybibtex_dict: Dict
                 Dictionary to collect error messages for BibTex entries.
@@ -277,11 +274,11 @@ def check_unescaped_characters(entry: bibtexparser.model.Entry, verifybibtex_dic
             verifybibtex_dict["errors"] += 1
 
 def create_verifybibtex_dictionary() -> Dict:
-    '''Function to create a dictionary to collect error messages for BibTex entries.
+    '''Function to create a dictionary to collect error messages for BibTeX entries.
 
         Returns
         -------
-            (Dict) Dictionary to collect error messages for BibTex entries.
+            (Dict) Dictionary to collect error messages for BibTeX entries.
 
     '''
 
@@ -304,7 +301,7 @@ def helper_check_curly_braces_pairs(text: str) -> bool:
             (bool) True if pairs or no curly braces, False if there are braces with no corresponding closing/opening brace.
 
     '''
-    braces_stack: list = list()
+    braces_stack = list()
     for char in text:
         if char == r"{":
             braces_stack.append(r"{")
@@ -316,7 +313,6 @@ def helper_check_curly_braces_pairs(text: str) -> bool:
 
     return not braces_stack
 
-# Okay
 def set_all_field_keys_lowercase(entry: bibtexparser.model.Entry) -> None:
     '''Function to set all field keys to lowercase.
 
@@ -338,9 +334,9 @@ def write_output(verifybibtex_dict: Dict) -> None:
                 Dictionary to collect error messages for BibTex entries.
 
     '''
-    with open("report/bibtex-analysis-status-report.txt", "w") as file:
+    with open("report/verifybibtex-report.md", "w") as file:
         # write general information
-        file.write("# VerifyBibTex Report (0.2.1)\n\n")
+        file.write("# VerifyBibTex Report (1.0.0)\n\n")
         file.write("## General\n")
         for no,message in enumerate(verifybibtex_dict["general"]):
             file.write(f"{no+1}. {message}\n")
