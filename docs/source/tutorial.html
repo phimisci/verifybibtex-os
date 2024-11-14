@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VerifyBibTex-OS (1.0.0) &mdash; VerifyBibTeX-OS 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="verifybibtex" href="modules.html" />
+    <link rel="prev" title="VerifyBibTeX-OS documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            VerifyBibTeX-OS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-container-registry">GitHub Container Registry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-local-build">Docker local build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#local-installation">Local installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-errors">General errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#critical-errors">Critical errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#warnings">Warnings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#versions">Versions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">1.0.0 (07.11.2024)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">VerifyBibTeX-OS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">VerifyBibTex-OS (1.0.0)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/tutorial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="verifybibtex-os-1-0-0">
+<h1>VerifyBibTex-OS (1.0.0)<a class="headerlink" href="#verifybibtex-os-1-0-0" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>VerifyBibTeX-OS is a Python application that checks your BibTeX file for
+potential errors. It outputs the results in the command line and writes
+them to a file called <code class="docutils literal notranslate"><span class="pre">verifybibtex-report.md</span></code>. The checks are
+particularly focusing on information necessary for valid citations in
+the APA style. For an overview of the checks, see the Features section
+below. The application heavily relies on the <code class="docutils literal notranslate"><span class="pre">bibtexparser</span></code> package
+(<a class="reference external" href="https://bibtexparser.readthedocs.io/en/main/index.html">Link</a>).</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>The preferred way to run VerifyBibTex is via Docker. This way, you can
+avoid any dependency issues. First, you need to install the Docker
+engine your machine. You can find the installation instructions
+<a class="reference external" href="https://docs.docker.com/get-docker/">here</a>.</p>
+<section id="github-container-registry">
+<h3>GitHub Container Registry<a class="headerlink" href="#github-container-registry" title="Link to this heading"></a></h3>
+<p>You can pull the Docker image from the GitHub Container Registry. To do
+so, run the following command:
+<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">ghcr.io/phimisci/verifybibtex-os:latest</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">ghcr.io/phimisci/verifybibtex-os:latest</span></code></p>
+</section>
+<section id="docker-local-build">
+<h3>Docker local build<a class="headerlink" href="#docker-local-build" title="Link to this heading"></a></h3>
+<p>In order to run VerifyBibTex via Docker using a local build, follow
+these steps:</p>
+<ol class="arabic simple">
+<li><p>Clone this repository.</p></li>
+<li><p>Assuming that yoh have Docker installed, you can now use
+<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span> <span class="pre">-t</span> <span class="pre">verifybibtex</span> <span class="pre">.</span></code> in the root folder of this
+repository to create the Docker image.</p></li>
+</ol>
+</section>
+<section id="local-installation">
+<h3>Local installation<a class="headerlink" href="#local-installation" title="Link to this heading"></a></h3>
+<p>Even though the Docker installation is preferred, you can also run
+VerifyBibTex locally. In order to do so, follow these steps:</p>
+<ol class="arabic simple">
+<li><p>Clone this repository.</p></li>
+<li><p>Make sure that Python (3.8 or higher) is installed on your machine.</p></li>
+<li><p>Install dependencies via
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--no-cache-dir</span> <span class="pre">--force-reinstall</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></p></li>
+<li><p>Make sure you have a <code class="docutils literal notranslate"><span class="pre">report</span></code> subfolder in the directory where you
+want to run the application.</p></li>
+</ol>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>If you are using Docker, you can run VerifyBibTex via the following
+command:
+<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">--rm</span> <span class="pre">-e</span> <span class="pre">BIBTEX_FILE=&lt;FILE_NAME&gt;.bib</span> <span class="pre">-v</span> <span class="pre">$(pwd):/app/report</span> <span class="pre">verifybibtex</span></code>,
+where you replace <code class="docutils literal notranslate"><span class="pre">&lt;FILE_NAME&gt;</span></code> with the name of your BibTeX file. In
+case you have been downloading the Docker image from the GitHub
+Container Registry, just replace <code class="docutils literal notranslate"><span class="pre">verifybibtex</span></code> with
+<code class="docutils literal notranslate"><span class="pre">ghcr.io/phimisci/verifybibtex-os:latest</span></code>. The report
+<code class="docutils literal notranslate"><span class="pre">verifybibtex-report.txt</span></code> will be written to the root folder of this
+repository. If you are running VerifyBibTex locally, you can use the
+command <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">verifybibtex.py</span> <span class="pre">path/to/bibliography.bib</span></code> via command
+line interface. The report will be written to the <code class="docutils literal notranslate"><span class="pre">report</span></code> subfolder.</p>
+<p>VerifyBibTex checks your bibtex file for potential errors. It outputs
+the results in the command line and writes them to
+<code class="docutils literal notranslate"><span class="pre">verifybibtex-report.md</span></code>. There are three types of errors.
+<strong>Important</strong>: VerifyBibTeX assumes that the BibTeX file uses line
+breaks within each entry. If your file does not use line breaks (which
+is a valid option for BibTeX files), the application will not work
+correctly.</p>
+<p>Correct:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">key</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Author}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Title}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Journal}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2023}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">volume</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">number</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1-10}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">doi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{10.1234/5678}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Incorrect:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">key</span><span class="p">,</span><span class="w"> </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Author}</span><span class="p">,</span><span class="w"> </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Title}</span><span class="p">,</span><span class="w"> </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Journal}</span><span class="p">,</span><span class="w"> </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2023}</span><span class="p">,</span><span class="w"> </span><span class="na">volume</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1}</span><span class="p">,</span><span class="w"> </span><span class="na">number</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1}</span><span class="p">,</span><span class="w"> </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1-10}</span><span class="p">,</span><span class="w"> </span><span class="na">doi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{10.1234/5678}</span><span class="p">}</span>
+</pre></div>
+</div>
+<section id="general-errors">
+<h3>General errors<a class="headerlink" href="#general-errors" title="Link to this heading"></a></h3>
+<p>These errors concern the overall structure of the .bib file. If these
+errors are present, the file is not a valid bibtex bibliography. This
+may include overall parsing errors, invalid blocks, or empty files.</p>
+</section>
+<section id="critical-errors">
+<h3>Critical errors<a class="headerlink" href="#critical-errors" title="Link to this heading"></a></h3>
+<p>Critical errors are errors that are likely to cause problems when using
+the bibliography in a citation manager or when compiling a document.
+These errors should be fixed before using the bibliography. This section
+also includes obviously missing information, such as missing book or
+article titles etc.</p>
+<ol class="arabic simple">
+<li><p>Checks if every field except the last one ends with a comma.</p></li>
+<li><p>Checks if characters, such as “&amp;”, “%”, and “#”, are escaped.</p></li>
+<li><p>Checks if incollection has date, booktitle, and editor fields.</p></li>
+<li><p>Checks if article has a title field.</p></li>
+<li><p>Checks if a field is entirely wrapped in curly braces.</p></li>
+</ol>
+</section>
+<section id="warnings">
+<h3>Warnings<a class="headerlink" href="#warnings" title="Link to this heading"></a></h3>
+<p>Warnings are less critical than errors but should still be fixed. They
+may indicate potential problems with the bibliography or with the
+citation. This section includes warnings about missing information that
+is not critical for the citation but may be important for the reader.</p>
+<ol class="arabic simple">
+<li><p>Checks if less critical characters, such as “$”, “^”, _“, and”~“,
+are escaped.</p></li>
+<li><p>For articles: Checks if article has a DOI or URL.</p></li>
+<li><p>For articles: Checks if article has an indicated page range or
+article numbers.</p></li>
+<li><p>For incollections: Checks if incollection entries have an editor,
+publisher, and a page range.</p></li>
+<li><p>In case of thesis entries, make sure that they do not have a “type”
+field.</p></li>
+<li><p>Checks if author or editor fields include ‘et al’ or ‘and others’
+(which should be avoided).</p></li>
+<li><p>Checks if title fields include many curly braces. If so, warn the
+user to check whether this is correct.</p></li>
+</ol>
+</section>
+</section>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Link to this heading"></a></h2>
+<p>This application was developed by Thomas Jurczyk (thomjur on GitHub) for
+the journal <a class="reference external" href="https://philosophymindscience.org/">Philosophy and the Mind
+Sciences</a> as part of a project
+funded by the German Research Foundation (DFG).</p>
+</section>
+<section id="versions">
+<h2>Versions<a class="headerlink" href="#versions" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>1.0.0 (07.11.2024)<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Open Source release of VerifyBibTex.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="VerifyBibTeX-OS documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="verifybibtex" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Thomas Jurczyk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>functions &mdash; VerifyBibTeX-OS 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            VerifyBibTeX-OS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/modules.html">Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">VerifyBibTeX-OS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for functions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This module contains functions to verify BibTeX entries. The functions are used in the verifybibtex.py script to check the entries for common errors and to write a report that is locally saved in the report folder.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">bibtexparser</span> <span class="c1"># type: ignore</span>
+
+<div class="viewcode-block" id="check_article_doi">
+<a class="viewcode-back" href="../source/functions.html#functions.check_article_doi">[docs]</a>
+<span class="k">def</span> <span class="nf">check_article_doi</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if article document has DOI or URL.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Check if doi or url is present</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;doi&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;No DOI or URL could be found!&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;doi&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Check if doi is correct (not including any domains but only the ID)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^10.*?\/[-._;()/:a-zA-Z0-9]+$&quot;</span><span class="p">)</span>
+        <span class="n">doi</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">doi</span><span class="p">):</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;This entry seems to have malformatted DOI: </span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="c1"># Check if doi ends with a full stop, which might be an error</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;doi&quot;</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span><span class="p">:</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;This entries&#39; DOI ends with a full stop, which might cause problems: </span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_article_pages">
+<a class="viewcode-back" href="../source/functions.html#functions.check_article_pages">[docs]</a>
+<span class="k">def</span> <span class="nf">check_article_pages</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if article document has pages.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pages&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;Article has no indicated page range. Please check if this is correct.&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_author_field">
+<a class="viewcode-back" href="../source/functions.html#functions.check_author_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_author_field</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Function to check if author/editor field is valid.</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">author_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;et al|and others&quot;</span><span class="p">,</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">author_pattern</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;author&quot;</span><span class="p">]):</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Author field contains &#39;et al&#39; or &#39;and others&#39;. Please avoid using these abbreviations and list all authors instead. Individual authors should be separated by &#39;and&#39;.&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;editor&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">author_pattern</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;editor&quot;</span><span class="p">]):</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Editor field contains &#39;et al&#39; or &#39;and others&#39;. Please avoid using these abbreviations and list all editors instead. Individual editors should be separated by &#39;and&#39;.&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_curly_braces">
+<a class="viewcode-back" href="../source/functions.html#functions.check_curly_braces">[docs]</a>
+<span class="k">def</span> <span class="nf">check_curly_braces</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span>  <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if a title includes many curly braces to secure capitalization. This might be intentional but could also lead to problems. Example: &quot;Going {n}owhere: {A} {j}ourney to {heaven}&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;Entry has no title.&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+        <span class="c1"># Count occurences if {}</span>
+        <span class="n">curly_braces_counter</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">curly_braces_counter</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Found several </span><span class="se">{{}}</span><span class="s2"> groups in title. Please check if this is correct.&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_double_curly_braces">
+<a class="viewcode-back" href="../source/functions.html#functions.check_double_curly_braces">[docs]</a>
+<span class="k">def</span> <span class="nf">check_double_curly_braces</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if some fields are wrapped in double curly braces. If so, warn the user.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># Fields to ignore</span>
+    <span class="n">ignored_fields_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;pages&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;year&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pubstate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;doi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;publisher&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;address&quot;</span>
+    <span class="p">]</span>
+    <span class="c1"># Create pattern to find double curly braces (in this case: only single braces) at start and end of string</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^\{.*\}$&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignored_fields_list</span><span class="p">:</span>
+            <span class="c1"># Check if string is really wrapped in curly braces or only starts and ends with pairs of braces</span>
+            <span class="c1"># TODO: There are still uncaught cases maybe</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># make sure string is long enough for a check</span>
+                <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> field is wrapped in double curly braces.&quot;</span><span class="p">)</span>
+                <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">helper_check_curly_braces_pairs</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> field is wrapped in double curly braces.&quot;</span><span class="p">)</span>
+                <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_invalid_fields">
+<a class="viewcode-back" href="../source/functions.html#functions.check_invalid_fields">[docs]</a>
+<span class="k">def</span> <span class="nf">check_invalid_fields</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if a field is valid. For example, every field entry should end with a comma.</span>
+<span class="sd">    </span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">                entry: bibtexparser.model.Entry</span>
+<span class="sd">                    The bibtexparser.model.Entry with .bib entry from BibDatabase.        </span>
+<span class="sd">                verifybibtex_dict: Dict</span>
+<span class="sd">                    Dictionary to collect error messages for BibTex entries.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">                None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">raw_entry</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">raw</span>
+    <span class="c1"># Split the raw entry into lines</span>
+    <span class="n">raw_lines_list</span> <span class="o">=</span> <span class="n">raw_entry</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Check if the entry has more than 3 lines (which is the minimum for a valid entry)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_lines_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span> 
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">raw_lines_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="c1"># Make sure to skip empty lines</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="c1"># Check if line ends with a comma</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;}&quot;</span><span class="p">):</span>
+                    <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The following line does not end with a comma (which leads to parsing errors): </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_incollection">
+<a class="viewcode-back" href="../source/functions.html#functions.check_incollection">[docs]</a>
+<span class="k">def</span> <span class="nf">check_incollection</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if a chapter entry (@incollection) includes all necessary information such as editors, booktitle, etc.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;editor&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;This chapter has no editors. Is that correct?&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;booktitle&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;This chapter has no book title.&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pubstate&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;This chapter has no date of publication.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pages&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;This chapter has no indicated page range. Please check if this is correct.&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;publisher&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;This chapter has no publisher.&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_parsing_errors">
+<a class="viewcode-back" href="../source/functions.html#functions.check_parsing_errors">[docs]</a>
+<span class="k">def</span> <span class="nf">check_parsing_errors</span><span class="p">(</span><span class="n">failed_blocks</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">ParsingFailedBlock</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to check for parsing errors and add them to dictionary. bibtexparser 2.X needed!</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            failed_blocks : bibtexparser.model.ParsingFailedBlock</span>
+<span class="sd">                List of failed blocks during parsing.</span>
+<span class="sd">            verifybibtex_dict : Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">failed_blocks</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing error occurred here: </span><span class="si">{</span><span class="n">block</span><span class="o">.</span><span class="n">raw</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># TODO: Exchange with block.error once this works</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_type_field">
+<a class="viewcode-back" href="../source/functions.html#functions.check_type_field">[docs]</a>
+<span class="k">def</span> <span class="nf">check_type_field</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Function to check if an entry contains a type field.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">&quot;This entry contains a type field, which should generally be avoided.&quot;</span><span class="p">)</span>
+        <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="check_unescaped_characters">
+<a class="viewcode-back" href="../source/functions.html#functions.check_unescaped_characters">[docs]</a>
+<span class="k">def</span> <span class="nf">check_unescaped_characters</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">,</span> <span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Function to check if a field contains unescaped characters which should be escaped, such as &amp;, #, or %. This might be intentional but could also lead to severe problems.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="c1"># First search for characters that should be escaped</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s&amp;|\s#|\s%&quot;</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;critical&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> field contains unescaped characters (&amp; or # or %). Please make sure to escape these characters using a backslash.&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s\$|\s\^|\s_|\s~&quot;</span><span class="p">,</span> <span class="n">entry</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">][</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]][</span><span class="s2">&quot;warning&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> field contains characters that might need to be escaped ($ or ^ or _ or ~). Please check if this is correct.&quot;</span><span class="p">)</span>
+            <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="create_verifybibtex_dictionary">
+<a class="viewcode-back" href="../source/functions.html#functions.create_verifybibtex_dictionary">[docs]</a>
+<span class="k">def</span> <span class="nf">create_verifybibtex_dictionary</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Function to create a dictionary to collect error messages for BibTeX entries.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTeX entries.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;entries&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(),</span>
+        <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;general&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(),</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="helper_check_curly_braces_pairs">
+<a class="viewcode-back" href="../source/functions.html#functions.helper_check_curly_braces_pairs">[docs]</a>
+<span class="k">def</span> <span class="nf">helper_check_curly_braces_pairs</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Function to check if a string has matching curly braces pairs</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            text: str</span>
+<span class="sd">                The text that should be checked.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            bool</span>
+<span class="sd">                True if pairs or no curly braces, False if there are braces with no corresponding closing/opening brace.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">braces_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="sa">r</span><span class="s2">&quot;{&quot;</span><span class="p">:</span>
+            <span class="n">braces_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="sa">r</span><span class="s2">&quot;}&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">braces_stack</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">braces_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">braces_stack</span></div>
+
+
+<div class="viewcode-block" id="set_all_field_keys_lowercase">
+<a class="viewcode-back" href="../source/functions.html#functions.set_all_field_keys_lowercase">[docs]</a>
+<span class="k">def</span> <span class="nf">set_all_field_keys_lowercase</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">bibtexparser</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Entry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Function to set all field keys to lowercase.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            entry: bibtexparser.model.Entry</span>
+<span class="sd">                The dictionary with .bib entry from BibDatabase.</span>
+<span class="sd">            </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">entry</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="write_output">
+<a class="viewcode-back" href="../source/functions.html#functions.write_output">[docs]</a>
+<span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">verifybibtex_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Function to write the output of VerifyBibTex to a file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            verifybibtex_dict: Dict</span>
+<span class="sd">                Dictionary to collect error messages for BibTex entries.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;report/verifybibtex-report.md&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="c1"># write general information</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# VerifyBibTex Report (1.0.0)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;## General</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">no</span><span class="p">,</span><span class="n">message</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;general&quot;</span><span class="p">]):</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">no</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s1">&#39;errors&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> errors.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># write specific information about entries</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;## Entries</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">verifybibtex_dict</span><span class="p">[</span><span class="s2">&quot;entries&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># skip if this entry has no errors</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;critical&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;warning&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;### </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;critical&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#### Important warnings</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">no</span><span class="p">,</span> <span class="n">message</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;critical&quot;</span><span class="p">]):</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">no</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;warning&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#### Other warnings</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">no</span><span class="p">,</span><span class="n">message</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;warning&quot;</span><span class="p">]):</span>
+                    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">no</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Thomas Jurczyk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

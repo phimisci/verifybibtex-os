@@ -1,0 +1,10 @@
+verifybibtex
+============
+This package contains the two modules for verifying the BibTeX file. The `functions` module contains the functions for verifying the BibTeX file. The `verifybibtex` module contains the logic to start the program and execute the tests.
+
+
+.. toctree::
+   :maxdepth: 4
+
+   functions
+   verifybibtex
