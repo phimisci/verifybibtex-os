@@ -1,4 +1,4 @@
-# VerifyBibTex-OS (1.0.0)
+# VerifyBibTeX-OS (1.0.0)
 
 ## Introduction
 VerifyBibTeX-OS is a Python application that checks your BibTeX file for potential errors. It outputs the results in the command line and writes them to a file called `verifybibtex-report.md`. The checks are particularly focusing on information necessary for valid citations in the APA style. For an overview of the checks, see the Features section below. The application heavily relies on the `bibtexparser` package ([Link](https://bibtexparser.readthedocs.io/en/main/index.html)).
