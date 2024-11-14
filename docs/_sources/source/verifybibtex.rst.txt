@@ -1,0 +1,7 @@
+verifybibtex module
+===================
+
+.. automodule:: verifybibtex
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -7,3 +7,4 @@ bibtex-analysis-status-report.txt
 *.bib
 report/
 !test/testbib.bib
+_docs/

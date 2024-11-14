@@ -1,3 +1,7 @@
+'''
+This module contains functions to verify BibTeX entries. The functions are used in the verifybibtex.py script to check the entries for common errors and to write a report that is locally saved in the report folder.
+'''
+
 import re
 from typing import Dict
 import bibtexparser # type: ignore
@@ -278,7 +282,8 @@ def create_verifybibtex_dictionary() -> Dict:
 
         Returns
         -------
-            (Dict) Dictionary to collect error messages for BibTeX entries.
+            Dict
+                Dictionary to collect error messages for BibTeX entries.
 
     '''
 
@@ -298,7 +303,8 @@ def helper_check_curly_braces_pairs(text: str) -> bool:
 
         Returns
         -------
-            (bool) True if pairs or no curly braces, False if there are braces with no corresponding closing/opening brace.
+            bool
+                True if pairs or no curly braces, False if there are braces with no corresponding closing/opening brace.
 
     '''
     braces_stack = list()
