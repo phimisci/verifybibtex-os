@@ -170,8 +170,8 @@ def check_invalid_fields(entry: bibtexparser.model.Entry, verifybibtex_dict: Dic
         for line in raw_lines_list[:-2]:
             # Make sure to skip empty lines
             if line.strip() != "":
-                # Check if line ends with a comma
-                if (line.strip().endswith(",") == False) and (line.strip()[-1] == "}"):
+                # Check if line ends with a comma, that the last character is '}' and that this is a valid closing bracket
+                if (line.strip().endswith(",") == False) and (line.strip()[-1] == "}") and helper_check_curly_braces_pairs(line.strip()):
                     verifybibtex_dict["entries"][entry['ID']]["critical"].append(
                         f"The following line does not end with a comma (which leads to parsing errors): {line}")
                     verifybibtex_dict["errors"] += 1
